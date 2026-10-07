@@ -14,8 +14,9 @@ import java.util.List;
 public class LedgerService {
     private final List<Transaction> transactions = new ArrayList<>();
 
-    public void addTransaction(Transaction t) {
+    public Transaction addTransaction(Transaction t) {
         transactions.add(t);
+        return t;
     }
 
     public double calculateTotalBalance() {
