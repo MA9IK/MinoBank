@@ -22,7 +22,7 @@ public class LedgerController {
 
     @GetMapping("/balance")
     public String showBalance() {
-        double res = ledgerService.calculateTotalBalance();
+        Double res = ledgerService.calculateTotalBalance();
 
         return "Your total balance is: " + res + ". You are broke man.";
     }
