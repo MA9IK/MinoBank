@@ -14,7 +14,7 @@ public class Transaction {
     private double amount;
     @Enumerated(EnumType.STRING)
     private TransactionType type;
-    private LocalDateTime timestamp;
+    private LocalDateTime created_at;
 
     public Transaction() {}
 
@@ -26,8 +26,8 @@ public class Transaction {
         this.type = type;
     }
 
-    public void setTimestamp(LocalDateTime timestamp) {
-        this.timestamp = timestamp;
+    public void setCreated_at(LocalDateTime created_at) {
+        this.created_at = created_at;
     }
 
 
@@ -35,8 +35,8 @@ public class Transaction {
         return amount;
     }
 
-    public LocalDateTime getTimestamp() {
-        return timestamp;
+    public LocalDateTime getCreated_at() {
+        return created_at;
     }
 
     public TransactionType getType() {
