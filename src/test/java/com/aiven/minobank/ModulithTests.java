@@ -3,7 +3,7 @@ package com.aiven.minobank;
 import org.junit.jupiter.api.Test;
 import org.springframework.modulith.core.ApplicationModules;
 
-public class ModulithTests {
+class ModulithTests {
 
 
     @Test
