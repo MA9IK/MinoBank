@@ -1,13 +1,12 @@
 package com.aiven.minobank;
 
 import org.junit.jupiter.api.Test;
-import org.springframework.boot.test.context.SpringBootTest;
 
-@SpringBootTest
-class MinoBankApplicationTests {
+class MinoBankApplicationTests extends BaseIntegrationTests {
 
     @Test
     void contextLoads() {
     }
+
 
 }
