@@ -1,6 +1,6 @@
 CREATE TABLE roles (
     id int GENERATED ALWAYS AS IDENTITY,
-    name varchar(50) not null,
+    name CITEXT not null,
     description varchar(255),
 
     CONSTRAINT pk_roles PRIMARY KEY (id),
