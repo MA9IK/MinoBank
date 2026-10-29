@@ -10,7 +10,7 @@
     </parent>
     <groupId>com.aiven</groupId>
     <artifactId>MinoBank</artifactId>
-    <version>0.0.1-SNAPSHOT</version>
+    <version>0.0.1</version>
     <name>MinoBank</name>
     <description>MinoBank</description>
     <url/>
