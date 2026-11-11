@@ -38,3 +38,28 @@ CREATE TABLE transactions (
 );
 CREATE INDEX ix_transactions_created_at ON transactions (created_at);
 CREATE INDEX ix_transactions_status ON transactions (status);
+
+
+CREATE TABLE accounts (
+    id UUID DEFAULT gen_random_uuid(),
+    iban VARCHAR(34) NOT NULL,
+    currency VARCHAR(3) NOT NULL,
+    type VARCHAR(64) NOT NULL,
+    status VARCHAR(64) NOT NULL DEFAULT 'ACTIVE',
+    balance_minor BIGINT NOT NULL DEFAULT 0,
+    version BIGINT NOT NULL DEFAULT 0,
+    status_changed_by UUID,
+    status_reason VARCHAR(255),
+    created_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP NOT NULL,
+    updated_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP NOT NULL,
+
+    CONSTRAINT ck_accounts_type check ( type IN ('CUSTOMER', 'INTERNAL') ),
+    CONSTRAINT ck_accounts_balance_minor CHECK ( (type = 'CUSTOMER' AND balance_minor >= 0) OR (type = 'INTERNAL') ),
+    CONSTRAINT ck_accounts_status check ( status IN ('FROZEN', 'CLOSED', 'ACTIVE') ),
+    CONSTRAINT pk_accounts PRIMARY KEY (id),
+    CONSTRAINT fk_accounts_status_changed_by FOREIGN KEY (status_changed_by)
+                      REFERENCES users (id) ON DELETE SET NULL,
+    CONSTRAINT uq_accounts_iban UNIQUE (iban),
+    CONSTRAINT ck_accounts_currency CHECK (currency ~ '^[A-Z]{3}$')
+
+);
