@@ -16,7 +16,7 @@ public abstract class BaseIntegrationTests {
 
     @BeforeEach()
     void clearDb() {
-        jdbcTemplate.execute("TRUNCATE TABLE users, user_roles, transactions RESTRICT");
+        jdbcTemplate.execute("TRUNCATE TABLE users, user_roles, transactions, accounts RESTRICT");
         jdbcTemplate.execute("DELETE FROM roles WHERE name LIKE 'test-%'");
     }
 
