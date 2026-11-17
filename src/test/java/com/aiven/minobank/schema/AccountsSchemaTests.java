@@ -32,6 +32,8 @@ public class AccountsSchemaTests extends BaseIntegrationTests {
         UUID account = seedAccount("iban-1", "INTERNAL");
         assertThatCode(() -> jdbcTemplate.update("UPDATE accounts SET balance_minor = -1 WHERE id=?", account))
                 .doesNotThrowAnyException();
+        assertThat(jdbcTemplate.queryForObject("SELECT balance_minor FROM accounts WHERE id=?", BigInteger.class, account))
+                .isEqualTo(-1L);
     }
 
     @Test
