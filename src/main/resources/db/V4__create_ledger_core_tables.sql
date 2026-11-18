@@ -60,6 +60,45 @@ CREATE TABLE accounts (
     CONSTRAINT fk_accounts_status_changed_by FOREIGN KEY (status_changed_by)
                       REFERENCES users (id) ON DELETE SET NULL,
     CONSTRAINT uq_accounts_iban UNIQUE (iban),
+    CONSTRAINT uq_accounts_id_currency UNIQUE (id, currency),
     CONSTRAINT ck_accounts_currency CHECK (currency ~ '^[A-Z]{3}$')
 
 );
+
+CREATE TABLE categories (
+                            id int GENERATED ALWAYS AS IDENTITY,
+                            name VARCHAR(255) NOT NULL,
+                            kind VARCHAR(120) NOT NULL,
+
+                            CONSTRAINT pk_categories PRIMARY KEY (id),
+                            CONSTRAINT ck_categories_kind CHECK ( kind IN ('INCOME', 'EXPENSE', 'TRANSFER') ),
+                            CONSTRAINT uq_categories_name UNIQUE (name)
+);
+
+CREATE TABLE ledger_entries (
+    id BIGINT GENERATED ALWAYS AS IDENTITY,
+    transaction_id UUID NOT NULL,
+    account_id UUID NOT NULL,
+    amount_minor BIGINT NOT NULL,
+    currency VARCHAR(3) NOT NULL,
+    balance_after_minor BIGINT NOT NULL,
+    category_id int,
+    note VARCHAR(255),
+    created_at TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP,
+
+    CONSTRAINT pk_ledger_entries PRIMARY KEY (id),
+    CONSTRAINT fk_ledger_entries_category_id FOREIGN KEY (category_id)
+        REFERENCES categories (id) ON DELETE RESTRICT,
+    CONSTRAINT fk_ledger_entries_account_currency FOREIGN KEY (account_id, currency)
+        REFERENCES accounts (id, currency) ON DELETE RESTRICT,
+    CONSTRAINT fk_ledger_entries_transaction_id FOREIGN KEY (transaction_id)
+        REFERENCES transactions (id) ON DELETE RESTRICT,
+    CONSTRAINT ck_ledger_entries_amount_minor CHECK ( amount_minor <> 0 ),
+    CONSTRAINT ck_ledger_entries_currency CHECK (currency ~ '^[A-Z]{3}$')
+);
+
+CREATE INDEX ix_ledger_entries_transaction_id
+    ON ledger_entries (transaction_id);
+
+CREATE INDEX ix_ledger_entries_account_created_at
+    ON ledger_entries (account_id, created_at DESC);
