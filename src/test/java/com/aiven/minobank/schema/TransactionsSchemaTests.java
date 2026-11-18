@@ -10,23 +10,7 @@ import static org.assertj.core.api.Assertions.*;
 
 public class TransactionsSchemaTests extends BaseIntegrationTests {
 
-    private UUID seedBasicTransaction() {
-        UUID user = seedBasicUser("dev@gmail.com");
-        return jdbcTemplate.queryForObject(
-                "INSERT INTO transactions (initiated_by, idempotency_key, request_hash, type, reference) VALUES (?, 123, 'asd', 'DEPOSIT', 'sdf') RETURNING id",
-                UUID.class,
-                user);
-    }
-    private UUID seedBasicTransaction(UUID userId, String idempotencyKey) {
-        return jdbcTemplate.queryForObject(
-                "INSERT INTO transactions (initiated_by, idempotency_key, request_hash, type) VALUES (?, ?, 'asdasd', 'DEPOSIT') RETURNING id",
-                UUID.class, userId, idempotencyKey);
-    }
-    private UUID seedBasicTransaction(UUID userId, String idempotencyKey, String type, UUID reverses_id) {
-        return jdbcTemplate.queryForObject(
-                "INSERT INTO transactions (initiated_by, idempotency_key, request_hash, type, reverses_transaction_id) VALUES (?, ?, 'asdasd', ?, ?) RETURNING id",
-                UUID.class, userId, idempotencyKey, type, reverses_id);
-    }
+
 
     @Test
     public void acceptingDefaultInsertWithRightDefault() {

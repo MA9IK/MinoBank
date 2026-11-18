@@ -11,13 +11,7 @@ import java.util.UUID;
 import static org.assertj.core.api.Assertions.*;
 
 public class AccountsSchemaTests extends BaseIntegrationTests {
-    private UUID seedAccount(String iban) {
-        return jdbcTemplate.queryForObject("INSERT INTO accounts (iban, currency, type) VALUES (?, 'USD', 'CUSTOMER') RETURNING id", UUID.class, iban);
-    }
 
-    private UUID seedAccount(String iban, String type) {
-        return jdbcTemplate.queryForObject("INSERT INTO accounts (iban, currency, type) VALUES (?, 'USD', ?) RETURNING id", UUID.class, iban, type);
-    }
 
     @Test
     public void rejectsDuplicateIBAN() {
@@ -29,7 +23,7 @@ public class AccountsSchemaTests extends BaseIntegrationTests {
 
     @Test
     public void allowsNegativeBalanceInternal() {
-        UUID account = seedAccount("iban-1", "INTERNAL");
+        UUID account = seedAccount("iban-1", "USD", "INTERNAL");
         assertThatCode(() -> jdbcTemplate.update("UPDATE accounts SET balance_minor = -1 WHERE id=?", account))
                 .doesNotThrowAnyException();
         assertThat(jdbcTemplate.queryForObject("SELECT balance_minor FROM accounts WHERE id=?", BigInteger.class, account))
@@ -38,7 +32,7 @@ public class AccountsSchemaTests extends BaseIntegrationTests {
 
     @Test
     public void rejectsNegativeBalanceCustomer() {
-        UUID account = seedAccount("iban-1", "CUSTOMER");
+        UUID account = seedAccount("iban-1", "USD", "CUSTOMER");
         assertThatThrownBy(() -> jdbcTemplate.update("UPDATE accounts SET balance_minor = -1 WHERE id=?", account))
                 .isInstanceOf(DataIntegrityViolationException.class)
                 .hasMessageContaining("ck_accounts_balance_minor");
